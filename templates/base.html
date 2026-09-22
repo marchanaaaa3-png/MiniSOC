@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}MiniSOC{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+<div class="brand">
+    <div class="brand-mark shield-logo" aria-label="MiniSOC Security Shield">
+        <span>◆</span>
+    </div>
+
+    <div class="brand-text">
+        <strong>MiniSOC</strong>
+        <span>Security Operations</span>
+    </div>
+</div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section">
+                <span>MONITORING</span>
+            </div>
+
+            <a href="{{ url_for('dashboard.dashboard') }}"
+               class="nav-item {% if request.endpoint == 'dashboard.dashboard' %}active{% endif %}">
+                <span class="nav-icon">▦</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('events.events') }}"
+               class="nav-item {% if request.endpoint == 'events.events' %}active{% endif %}">
+                <span class="nav-icon">◇</span>
+                <span>Events</span>
+            </a>
+
+            <a href="{{ url_for('alerts.alerts') }}"
+               class="nav-item {% if request.endpoint == 'alerts.alerts' %}active{% endif %}">
+                <span class="nav-icon">!</span>
+                <span>Alerts</span>
+            </a>
+
+            <a href="{{ url_for('logs.logs') }}"
+               class="nav-item {% if request.endpoint == 'logs.logs' %}active{% endif %}">
+                <span class="nav-icon">≡</span>
+                <span>Log Explorer</span>
+            </a>
+
+
+            <div class="nav-section">
+                <span>ANALYSIS</span>
+            </div>
+
+            <a href="{{ url_for('detector_rules.detector_rules') }}"
+               class="nav-item {% if request.endpoint == 'detector_rules.detector_rules' %}active{% endif %}">
+                <span class="nav-icon">◇</span>
+                <span>Detector Rules</span>
+            </a>
+
+            <a href="{{ url_for('threat_intelligence.threat_intelligence') }}"
+               class="nav-item {% if request.endpoint == 'threat_intelligence.threat_intelligence' %}active{% endif %}">
+                <span class="nav-icon">◎</span>
+                <span>Threat Intelligence</span>
+            </a>
+
+            <a href="{{ url_for('reports.reports') }}"
+               class="nav-item {% if request.endpoint == 'reports.reports' %}active{% endif %}">
+                <span class="nav-icon">▤</span>
+                <span>Reports</span>
+            </a>
+
+
+            <div class="nav-section">
+                <span>SYSTEM</span>
+            </div>
+
+            <a href="{{ url_for('settings.settings') }}"
+               class="nav-item {% if request.endpoint == 'settings.settings' %}active{% endif %}">
+                <span class="nav-icon">⚙</span>
+                <span>Settings</span>
+            </a>
+
+            <a href="{{ url_for('simulator.simulator') }}"
+               class="nav-item {% if request.endpoint == 'simulator.simulator' %}active{% endif %}">
+                <span class="nav-icon">▶</span>
+                <span>Event Simulator</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-status">
+
+            <div class="status-dot"></div>
+
+            <div>
+                <strong>SYSTEM ONLINE</strong>
+                <span>MiniSOC Engine</span>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN AREA
+         ===================================================== -->
+
+    <main class="main-area">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                {% if request.endpoint != 'dashboard.dashboard' %}
+
+                <a href="javascript:history.back()"
+                   class="back-button">
+                    ← Back
+                </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="utc-clock">
+                    UTC <span id="utc-clock">--:--:--</span>
+                </div>
+
+                <div class="user-account">
+
+                    <div class="user-avatar">
+                        {{ session.get('username', 'U')[0]|upper }}
+                    </div>
+
+                    <div class="user-info">
+                        <strong>{{ session.get('username', 'User') }}</strong>
+                        <span>{{ session.get('role', 'Analyst') }}</span>
+                    </div>
+
+                </div>
+
+                <a href="{{ url_for('auth.logout') }}"
+                   class="logout-button">
+                    Logout
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             PAGE CONTENT
+             ================================================= -->
+
+        <section class="page-content">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+                {% if messages %}
+
+                    <div class="flash-container">
+
+                        {% for category, message in messages %}
+
+                            <div class="flash-message {{ category }}">
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            {% endwith %}
+
+
+            {% block content %}{% endblock %}
+
+        </section>
+
+
+        <footer class="app-footer">
+    <span>© 2026 MiniSOC</span>
+    <span>Security Operations Platform</span>
+    <span>Built for educational and demonstration purposes</span>
+</footer>
+
+    </main>
+
+</div>
+
+
+<script>
+
+function updateUTCClock() {
+
+    const clock = document.getElementById("utc-clock");
+
+    if (!clock) {
+        return;
+    }
+
+    const now = new Date();
+
+    const hours = String(
+        now.getUTCHours()
+    ).padStart(2, "0");
+
+    const minutes = String(
+        now.getUTCMinutes()
+    ).padStart(2, "0");
+
+    const seconds = String(
+        now.getUTCSeconds()
+    ).padStart(2, "0");
+
+    clock.textContent =
+        `${hours}:${minutes}:${seconds}`;
+}
+
+
+updateUTCClock();
+
+setInterval(
+    updateUTCClock,
+    1000
+);
+
+</script>
+
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

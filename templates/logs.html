@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}
+MiniSOC | Log Explorer
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-page">
+
+    <!-- ======================================================
+         PAGE HEADER
+    ======================================================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                SECURITY TELEMETRY
+            </span>
+
+            <h1>
+                Log Explorer
+            </h1>
+
+            <p>
+                Search and investigate raw security telemetry
+                stored by MiniSOC.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         SEARCH
+    ======================================================= -->
+
+    <section class="panel filter-panel">
+
+        <form
+            method="GET"
+            action="{{ url_for('logs.logs') }}"
+            class="filter-form"
+        >
+
+            <div class="form-group form-group-wide">
+
+                <label for="search">
+                    Search Logs
+                </label>
+
+                <input
+                    type="text"
+                    id="search"
+                    name="search"
+                    value="{{ search }}"
+                    placeholder="Search IP, event type, severity, message or status..."
+                >
+
+            </div>
+
+
+            <div class="filter-actions">
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    Search
+                </button>
+
+                <a
+                    href="{{ url_for('logs.logs') }}"
+                    class="secondary-button"
+                >
+                    Clear
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- ======================================================
+         LOG TABLE
+    ======================================================= -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-kicker">
+                    RAW EVENT LOG
+                </span>
+
+                <h2>
+                    Security Telemetry
+                </h2>
+
+            </div>
+
+            <span class="record-count">
+                {{ logs|length }} records
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="soc-table log-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>TIMESTAMP</th>
+                        <th>SOURCE</th>
+                        <th>DESTINATION</th>
+                        <th>TYPE</th>
+                        <th>SEVERITY</th>
+                        <th>STATUS</th>
+                        <th>MESSAGE</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for log in logs %}
+
+                    <tr>
+
+                        <td>
+                            #{{ log.id }}
+                        </td>
+
+                        <td class="mono">
+                            {{ log.timestamp }}
+                        </td>
+
+                        <td class="mono">
+                            {{ log.source_ip }}
+                        </td>
+
+                        <td class="mono">
+                            {{ log.destination_ip }}
+                        </td>
+
+                        <td>
+                            {{ log.event_type }}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="severity-badge {{ log.severity|lower }}"
+                            >
+                                {{ log.severity }}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="status-badge">
+                                {{ log.status }}
+                            </span>
+
+                        </td>
+
+                        <td>
+                            {{ log.message }}
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="empty-state"
+                        >
+                            No logs found.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

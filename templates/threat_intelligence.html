@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block title %}
+MiniSOC | Threat Intelligence
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-page">
+
+    <!-- ======================================================
+         PAGE HEADER
+    ======================================================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                THREAT INTELLIGENCE
+            </span>
+
+            <h1>
+                Threat Intelligence
+            </h1>
+
+            <p>
+                Review indicators and intelligence records
+                available to the MiniSOC detection environment.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         SUMMARY
+    ======================================================= -->
+
+    <div class="metrics-grid metrics-grid-small">
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                INDICATORS
+            </div>
+
+            <div class="metric-value">
+                {{ indicators|length }}
+            </div>
+
+            <div class="metric-meta">
+                Available indicators
+            </div>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                HIGH CONFIDENCE
+            </div>
+
+            <div class="metric-value">
+                {{ indicators|selectattr("confidence", "ge", 80)|list|length }}
+            </div>
+
+            <div class="metric-meta">
+                Confidence ≥ 80%
+            </div>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                IP INDICATORS
+            </div>
+
+            <div class="metric-value">
+                {{ indicators|selectattr("indicator_type", "equalto", "IPv4")|list|length }}
+            </div>
+
+            <div class="metric-meta">
+                IPv4 indicators
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         INTELLIGENCE TABLE
+    ======================================================= -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-kicker">
+                    INDICATOR DATABASE
+                </span>
+
+                <h2>
+                    Intelligence Indicators
+                </h2>
+
+            </div>
+
+            <span class="record-count">
+                {{ indicators|length }} indicators
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="soc-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>INDICATOR</th>
+                        <th>TYPE</th>
+                        <th>CONFIDENCE</th>
+                        <th>CATEGORY</th>
+                        <th>SOURCE</th>
+                        <th>NOTES</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for indicator in indicators %}
+
+                    <tr>
+
+                        <td class="mono">
+                            {{ indicator.indicator }}
+                        </td>
+
+
+                        <td>
+                            {{ indicator.indicator_type }}
+                        </td>
+
+
+                        <td>
+
+                            <div class="confidence-cell">
+
+                                <div class="confidence-bar">
+
+                                    <div
+                                        class="confidence-fill"
+                                        style="width: {{ indicator.confidence }}%"
+                                    ></div>
+
+                                </div>
+
+                                <span>
+                                    {{ indicator.confidence }}%
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="intel-category">
+                                {{ indicator.category }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            {{ indicator.source }}
+                        </td>
+
+
+                        <td>
+                            {{ indicator.notes }}
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="empty-state"
+                        >
+                            No threat intelligence indicators
+                            are currently available.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         INFORMATION PANEL
+    ======================================================= -->
+
+    <section class="panel compact-panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-kicker">
+                    INTELLIGENCE CONTEXT
+                </span>
+
+                <h2>
+                    About These Indicators
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <p class="panel-description">
+
+            MiniSOC currently includes a small set of safe,
+            documentation-only IP indicators for local
+            demonstration and testing. These indicators are
+            stored in the SQLite database and are not intended
+            to represent a live commercial threat-intelligence
+            feed.
+
+        </p>
+
+    </section>
+
+</div>
+
+{% endblock %}

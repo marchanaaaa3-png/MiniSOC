@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MiniSOC | Secure Access</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body class="login-page">
+
+    <!-- Background -->
+    <div class="login-background">
+        <div class="login-grid"></div>
+
+        <div class="login-orbit login-orbit-one"></div>
+        <div class="login-orbit login-orbit-two"></div>
+
+        <div class="login-glow login-glow-one"></div>
+        <div class="login-glow login-glow-two"></div>
+    </div>
+
+
+    <!-- Login -->
+    <main class="login-container">
+
+        <section class="login-card">
+
+            <!-- Brand -->
+            <div class="login-brand">
+
+                <div
+                    class="login-brand-mark protector-logo"
+                    aria-label="MiniSOC Security Protector"
+                >
+                    <span>◆</span>
+                </div>
+
+                <div class="login-brand-text">
+                    <strong>MiniSOC</strong>
+                    <span>SECURITY OPERATIONS CENTER</span>
+                </div>
+
+            </div>
+
+
+            <!-- Status -->
+            <div class="login-status">
+                <span class="login-status-dot"></span>
+                <span>SECURE LOCAL ENVIRONMENT</span>
+            </div>
+
+
+            <!-- Heading -->
+            <div class="login-heading">
+
+                <span class="eyebrow">
+                    AUTHENTICATION REQUIRED
+                </span>
+
+                <h1>
+                    Welcome back
+                </h1>
+
+                <p>
+                    Sign in to access your security
+                    monitoring environment.
+                </p>
+
+            </div>
+
+
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+                {% if messages %}
+
+                    <div class="login-messages">
+
+                        {% for category, message in messages %}
+
+                            <div class="flash-message {{ category }}">
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            {% endwith %}
+
+
+            <!-- Login form -->
+            <form
+                method="POST"
+                action="{{ url_for('auth.login') }}"
+                class="login-form"
+            >
+
+                <!-- Username -->
+                <div class="form-group">
+
+                    <label for="username">
+                        USERNAME
+                    </label>
+
+                    <div class="login-input-wrapper">
+
+                        <span class="login-input-icon">
+                            ◉
+                        </span>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter username"
+                            autocomplete="username"
+                            required
+                            autofocus
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+                <div class="form-group">
+
+                    <label for="password">
+                        PASSWORD
+                    </label>
+
+                    <div class="login-input-wrapper">
+
+                        <span class="login-input-icon">
+                            ◆
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+
+                    <span>
+                        AUTHENTICATE
+                    </span>
+
+                    <span class="login-arrow">
+                        →
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <!-- Security information -->
+            <div class="login-security">
+
+                <div class="security-item">
+
+                    <span class="security-icon">
+                        ✓
+                    </span>
+
+                    <div>
+                        <strong>Protected Session</strong>
+                        <span>Encrypted authentication</span>
+                    </div>
+
+                </div>
+
+                <div class="security-item">
+
+                    <span class="security-icon">
+                        ◈
+                    </span>
+
+                    <div>
+                        <strong>Local SOC</strong>
+                        <span>Authorized access only</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Copyright -->
+            <div class="login-footer">
+
+                <span>
+                    © 2026 MiniSOC
+                </span>
+
+                <span>
+                    Security Operations Platform
+                </span>
+
+                <span>
+                    Built for educational and demonstration purposes
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- Bottom status -->
+        <div class="login-bottom-status">
+
+            <span class="status-dot"></span>
+
+            <span>
+                SECURITY MONITORING SYSTEM READY
+            </span>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block title %}
+MiniSOC | Events
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-page">
+
+    <!-- ======================================================
+         PAGE HEADER
+    ======================================================= -->
+
+    <div class="page-header">
+
+        <div>
+            <span class="eyebrow">
+                SECURITY TELEMETRY
+            </span>
+
+            <h1>
+                Events
+            </h1>
+
+            <p>
+                Browse and filter security events collected
+                by MiniSOC.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         FILTERS
+    ======================================================= -->
+
+    <section class="panel filter-panel">
+
+        <form
+            method="GET"
+            action="{{ url_for('events.events') }}"
+            class="filter-form"
+        >
+
+            <div class="form-group">
+
+                <label for="search">
+                    Search
+                </label>
+
+                <input
+                    type="text"
+                    id="search"
+                    name="search"
+                    value="{{ search }}"
+                    placeholder="IP, event type, message..."
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="severity">
+                    Severity
+                </label>
+
+                <select
+                    id="severity"
+                    name="severity"
+                >
+
+                    <option value="">
+                        All Severities
+                    </option>
+
+                    <option
+                        value="CRITICAL"
+                        {% if selected_severity == "CRITICAL" %}selected{% endif %}
+                    >
+                        Critical
+                    </option>
+
+                    <option
+                        value="HIGH"
+                        {% if selected_severity == "HIGH" %}selected{% endif %}
+                    >
+                        High
+                    </option>
+
+                    <option
+                        value="MEDIUM"
+                        {% if selected_severity == "MEDIUM" %}selected{% endif %}
+                    >
+                        Medium
+                    </option>
+
+                    <option
+                        value="LOW"
+                        {% if selected_severity == "LOW" %}selected{% endif %}
+                    >
+                        Low
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="event_type">
+                    Event Type
+                </label>
+
+                <select
+                    id="event_type"
+                    name="event_type"
+                >
+
+                    <option value="">
+                        All Event Types
+                    </option>
+
+                    {% for type in event_types %}
+
+                    <option
+                        value="{{ type.event_type }}"
+                        {% if selected_event_type == type.event_type %}selected{% endif %}
+                    >
+                        {{ type.event_type }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-actions">
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    Apply Filters
+                </button>
+
+                <a
+                    href="{{ url_for('events.events') }}"
+                    class="secondary-button"
+                >
+                    Clear
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- ======================================================
+         EVENTS TABLE
+    ======================================================= -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-kicker">
+                    EVENT DATABASE
+                </span>
+
+                <h2>
+                    Security Events
+                </h2>
+
+            </div>
+
+            <span class="record-count">
+                {{ events|length }} records
+            </span>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="soc-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>TIME</th>
+                        <th>SOURCE</th>
+                        <th>DESTINATION</th>
+                        <th>EVENT TYPE</th>
+                        <th>SEVERITY</th>
+                        <th>STATUS</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for event in events %}
+
+                    <tr>
+
+                        <td>
+                            #{{ event.id }}
+                        </td>
+
+                        <td>
+                            {{ event.timestamp }}
+                        </td>
+
+                        <td class="mono">
+                            {{ event.source_ip }}
+                        </td>
+
+                        <td class="mono">
+                            {{ event.destination_ip }}
+                        </td>
+
+                        <td>
+                            <div class="event-cell">
+
+                                <strong>
+                                    {{ event.event_type }}
+                                </strong>
+
+                                <small>
+                                    {{ event.message }}
+                                </small>
+
+                            </div>
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="severity-badge {{ event.severity|lower }}"
+                            >
+                                {{ event.severity }}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="status-badge">
+                                {{ event.status }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty-state"
+                        >
+                            No events match the selected filters.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

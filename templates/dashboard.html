@@ -1,0 +1,544 @@
+{% extends "base.html" %}
+
+{% block title %}MiniSOC | Dashboard{% endblock %}
+
+{% block head %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="soc-dashboard">
+
+    <!-- =====================================================
+         DASHBOARD HEADER
+         ===================================================== -->
+
+    <div class="soc-dashboard-header">
+
+        <div>
+            <div class="soc-kicker">
+                SECURITY MONITORING
+            </div>
+
+            <h1>
+                Security Operations Dashboard
+            </h1>
+
+            <p>
+                Real-time visibility across security events,
+                alerts and monitored infrastructure.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         KPI CARDS
+         ===================================================== -->
+
+    <div class="soc-kpi-grid">
+
+        <div class="soc-kpi-card">
+
+            <span class="soc-kpi-label">
+                EVENTS
+            </span>
+
+            <strong id="total-events">
+                0
+            </strong>
+
+            <small>
+                Total security events
+            </small>
+
+        </div>
+
+
+        <div class="soc-kpi-card">
+
+            <span class="soc-kpi-label">
+                OPEN ALERTS
+            </span>
+
+            <strong id="open-alerts">
+                0
+            </strong>
+
+            <small>
+                Active security alerts
+            </small>
+
+        </div>
+
+
+        <div class="soc-kpi-card">
+
+            <span class="soc-kpi-label">
+                CRITICAL EVENTS
+            </span>
+
+            <strong id="critical-events">
+                0
+            </strong>
+
+            <small>
+                Critical severity events
+            </small>
+
+        </div>
+
+
+        <div class="soc-kpi-card">
+
+            <span class="soc-kpi-label">
+                SOURCE IPS
+            </span>
+
+            <strong id="source-ips">
+                0
+            </strong>
+
+            <small>
+                Unique monitored sources
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN MONITORING AREA
+         ===================================================== -->
+
+    <div class="soc-main-grid">
+
+
+        <!-- ================= GLOBE ================= -->
+
+        <section class="soc-panel soc-globe-panel">
+
+            <div class="soc-panel-header">
+
+                <div>
+                    <h2>
+                        Global Threat Activity
+                    </h2>
+
+                    <p>
+                        India-focused security telemetry
+                    </p>
+                </div>
+
+                <div class="soc-live-monitor">
+
+    <div class="monitor-radar">
+        <div class="radar-ring radar-ring-1"></div>
+        <div class="radar-ring radar-ring-2"></div>
+        <div class="radar-ring radar-ring-3"></div>
+
+        <div class="radar-sweep"></div>
+
+        <div class="radar-center">
+            <span></span>
+        </div>
+    </div>
+
+    <div class="monitor-status">
+        <strong>LIVE MONITORING</strong>
+        <span>
+            <i></i>
+            ACTIVE
+        </span>
+    </div>
+
+</div>
+
+            </div>
+
+
+            <div class="soc-globe-container">
+
+                <div id="globe-canvas"></div>
+
+
+                <!-- Globe information -->
+
+                <div id="globe-threat-detail"></div>
+
+
+                <!-- Globe counters -->
+
+                <div class="globe-counters">
+
+                    <div class="globe-counter">
+
+                        <span
+                            class="globe-counter-value"
+                            id="globe-event-count">
+                            0
+                        </span>
+
+                        <span class="globe-counter-label">
+                            EVENTS
+                        </span>
+
+                    </div>
+
+
+                    <div class="globe-counter">
+
+                        <span
+                            class="globe-counter-value"
+                            id="globe-threat-count">
+                            0
+                        </span>
+
+                        <span class="globe-counter-label">
+                            THREATS
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= RIGHT COLUMN ================= -->
+
+        <div class="soc-right-column">
+
+
+            <!-- Severity -->
+
+            <section class="soc-panel">
+
+                <div class="soc-panel-header">
+
+                    <div>
+                        <h2>
+                            Severity Monitor
+                        </h2>
+
+                        <p>
+                            Event distribution
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="soc-severity-list">
+
+
+                    <div class="soc-severity-row">
+
+                        <span>
+                            CRITICAL
+                        </span>
+
+                        <div class="soc-severity-track">
+                            <div
+                                id="critical-bar"
+                                class="soc-severity-bar">
+                            </div>
+                        </div>
+
+                        <strong id="critical-count">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="soc-severity-row">
+
+                        <span>
+                            HIGH
+                        </span>
+
+                        <div class="soc-severity-track">
+                            <div
+                                id="high-bar"
+                                class="soc-severity-bar">
+                            </div>
+                        </div>
+
+                        <strong id="high-count">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="soc-severity-row">
+
+                        <span>
+                            MEDIUM
+                        </span>
+
+                        <div class="soc-severity-track">
+                            <div
+                                id="medium-bar"
+                                class="soc-severity-bar">
+                            </div>
+                        </div>
+
+                        <strong id="medium-count">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="soc-severity-row">
+
+                        <span>
+                            LOW
+                        </span>
+
+                        <div class="soc-severity-track">
+                            <div
+                                id="low-bar"
+                                class="soc-severity-bar">
+                            </div>
+                        </div>
+
+                        <strong id="low-count">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Detection Engine -->
+
+            <section class="soc-panel">
+
+                <div class="soc-panel-header">
+
+                    <div>
+                        <h2>
+                            Detection Engine
+                        </h2>
+
+                        <p>
+                            Automated event analysis
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="soc-engine-status">
+
+                    <span class="soc-engine-dot"></span>
+
+                    <span>
+                        Detection engine active
+                    </span>
+
+                </div>
+
+
+                <div class="soc-engine-metrics">
+
+                    <div class="soc-engine-metric">
+
+                        <span>
+                            ANALYZED
+                        </span>
+
+                        <strong id="analyzed-events">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="soc-engine-metric">
+
+                        <span>
+                            ALERTS
+                        </span>
+
+                        <strong id="total-alerts">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Event Simulator -->
+
+            <section class="soc-panel soc-simulator-card">
+
+                <div>
+
+                    <h2>
+                        Event Simulator
+                    </h2>
+
+                    <p>
+                        Generate controlled security telemetry.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('simulator.simulator') }}"
+                    class="soc-action-button">
+                    OPEN SIMULATOR
+                </a>
+
+            </section>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RECENT EVENTS / ALERTS
+         ===================================================== -->
+
+    <div class="soc-bottom-grid">
+
+
+        <!-- Recent Events -->
+
+        <section class="soc-panel">
+
+            <div class="soc-panel-header">
+
+                <div>
+
+                    <h2>
+                        Recent Security Events
+                    </h2>
+
+                    <p>
+                        Latest telemetry received
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('events.events') }}"
+                    class="soc-action-button">
+                    VIEW ALL
+                </a>
+
+            </div>
+
+
+            <div class="soc-table-container">
+
+                <table class="soc-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>TIME</th>
+                            <th>SOURCE</th>
+                            <th>EVENT</th>
+                            <th>SEVERITY</th>
+                            <th>STATUS</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="recent-events-body">
+
+                        <tr>
+
+                            <td colspan="5"
+                                class="soc-empty-state">
+                                No security events recorded
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- Recent Alerts -->
+
+        <section class="soc-panel">
+
+            <div class="soc-panel-header">
+
+                <div>
+
+                    <h2>
+                        Recent Alerts
+                    </h2>
+
+                    <p>
+                        Latest detector activity
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('alerts.alerts') }}"
+                    class="soc-action-button">
+                    VIEW ALL
+                </a>
+
+            </div>
+
+
+            <div
+                id="recent-alerts-list"
+                class="soc-alert-list">
+
+                <div class="soc-empty-state">
+                    No active alerts
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+<script type="module"
+        src="{{ url_for('static', filename='js/globe.js') }}">
+</script>
+
+{% endblock %}

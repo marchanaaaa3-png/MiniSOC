@@ -1,0 +1,423 @@
+{% extends "base.html" %}
+
+{% block title %}
+MiniSOC | Settings
+{% endblock %}
+
+{% block content %}
+
+<div class="content-page">
+
+    <div class="page-header">
+        <div>
+            <span class="eyebrow">SYSTEM CONFIGURATION</span>
+            <h1>Settings</h1>
+            <p>
+                View MiniSOC configuration and manage authorized users.
+            </p>
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         APPLICATION STATUS
+         ===================================================== -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <span class="panel-kicker">APPLICATION</span>
+                <h2>Application Status</h2>
+            </div>
+
+            <span class="status-badge status-open">
+                ONLINE
+            </span>
+
+        </div>
+
+        <div class="settings-grid">
+
+            <div class="setting-item">
+                <span class="detail-label">APPLICATION</span>
+                <strong>MiniSOC</strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">VERSION</span>
+                <strong>1.0.0</strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">ENVIRONMENT</span>
+                <strong>Local Development</strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">MONITORING MODE</span>
+                <strong>{{ system_info.monitoring }}</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DATABASE
+         ===================================================== -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <span class="panel-kicker">DATA STORAGE</span>
+                <h2>Database</h2>
+            </div>
+
+            <span class="status-badge status-open">
+                {{ system_info.database_status }}
+            </span>
+
+        </div>
+
+        <div class="settings-grid">
+
+            <div class="setting-item">
+                <span class="detail-label">DATABASE ENGINE</span>
+                <strong>{{ system_info.database }}</strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">DATABASE FILE</span>
+                <strong class="mono">
+                    data/minisoc.db
+                </strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">EVENTS STORED</span>
+                <strong>{{ system_info.event_count }}</strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">ALERTS STORED</span>
+                <strong>{{ system_info.alert_count }}</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DETECTION ENGINE
+         ===================================================== -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <span class="panel-kicker">SECURITY ANALYSIS</span>
+                <h2>Detection Engine</h2>
+            </div>
+
+            <span class="status-badge status-open">
+                {{ system_info.detection_engine }}
+            </span>
+
+        </div>
+
+        <div class="settings-grid">
+
+            <div class="setting-item">
+                <span class="detail-label">ENGINE</span>
+                <strong>MiniSOC Detection Engine</strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">TOTAL RULES</span>
+                <strong>{{ system_info.rule_count }}</strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">ENABLED RULES</span>
+                <strong>{{ system_info.enabled_rule_count }}</strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">ALERT CREATION</span>
+                <strong>Automatic</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         THREAT INTELLIGENCE
+         ===================================================== -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <span class="panel-kicker">THREAT INTELLIGENCE</span>
+                <h2>Intelligence Database</h2>
+            </div>
+
+        </div>
+
+        <div class="settings-grid">
+
+            <div class="setting-item">
+                <span class="detail-label">INDICATORS</span>
+                <strong>{{ system_info.indicator_count }}</strong>
+            </div>
+
+            <div class="setting-item">
+                <span class="detail-label">INTELLIGENCE STATUS</span>
+                <strong>ACTIVE</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         USER MANAGEMENT
+         ===================================================== -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <span class="panel-kicker">ACCESS CONTROL</span>
+                <h2>User Management</h2>
+            </div>
+
+            <span class="status-badge status-open">
+                {{ system_info.authentication }}
+            </span>
+
+        </div>
+
+
+        <!-- Create User -->
+
+        <div class="settings-user-create">
+
+            <div class="settings-subheading">
+                <h3>Create User</h3>
+
+                <p>
+                    Add an authorized MiniSOC user.
+                </p>
+            </div>
+
+
+            <form
+                method="POST"
+                action="{{ url_for('settings.settings') }}"
+                class="settings-user-form"
+            >
+
+                <div class="form-group">
+
+                    <label for="username">
+                        USERNAME
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter username"
+                        minlength="3"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        PASSWORD
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Minimum 8 characters"
+                        minlength="8"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="role">
+                        ROLE
+                    </label>
+
+                    <select
+                        id="role"
+                        name="role"
+                        required
+                    >
+
+                        <option value="SOC Analyst">
+                            SOC Analyst
+                        </option>
+
+                        <option value="Administrator">
+                            Administrator
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="settings-user-action">
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        CREATE USER
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- Existing Users -->
+
+        <div class="settings-user-list">
+
+            <div class="settings-subheading">
+
+                <h3>Authorized Users</h3>
+
+                <p>
+                    Accounts currently registered in MiniSOC.
+                </p>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table class="soc-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>USERNAME</th>
+                            <th>ROLE</th>
+                            <th>CREATED</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for user in users %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ user.username }}
+                                </strong>
+                            </td>
+
+                            <td>
+
+                                <span class="status-badge">
+                                    {{ user.role }}
+                                </span>
+
+                            </td>
+
+                            <td class="mono">
+                                {{ user.created_at }}
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+
+                            <td
+                                colspan="3"
+                                class="soc-empty-state"
+                            >
+                                No users found.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PROJECT INFORMATION
+         ===================================================== -->
+
+    <section class="panel compact-panel">
+
+        <div class="panel-header">
+
+            <div>
+                <span class="panel-kicker">
+                    PROJECT INFORMATION
+                </span>
+
+                <h2>MiniSOC</h2>
+            </div>
+
+        </div>
+
+        <p class="panel-description">
+
+            MiniSOC is a local security operations center
+            demonstrator built with Flask, SQLite and a
+            rule-based detection engine. Events generated
+            through the Event Simulator are stored in the
+            database and analyzed automatically.
+
+        </p>
+
+    </section>
+
+</div>
+
+{% endblock %}

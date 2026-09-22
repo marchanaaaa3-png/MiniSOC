@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+
+{% block title %}
+MiniSOC | Detector Rules
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-page">
+
+    <!-- ======================================================
+         PAGE HEADER
+    ======================================================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                DETECTION ENGINE
+            </span>
+
+            <h1>
+                Detector Rules
+            </h1>
+
+            <p>
+                Manage the rules used by MiniSOC to identify
+                suspicious security activity.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         RULE SUMMARY
+    ======================================================= -->
+
+    <div class="metrics-grid metrics-grid-small">
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                TOTAL RULES
+            </div>
+
+            <div class="metric-value">
+                {{ rules|length }}
+            </div>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                ENABLED
+            </div>
+
+            <div class="metric-value">
+                {{ rules|selectattr("enabled", "equalto", 1)|list|length }}
+            </div>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                DISABLED
+            </div>
+
+            <div class="metric-value">
+                {{ rules|selectattr("enabled", "equalto", 0)|list|length }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         DETECTION RULES
+    ======================================================= -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-kicker">
+                    ACTIVE DETECTION LOGIC
+                </span>
+
+                <h2>
+                    Detection Rules
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="soc-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>RULE</th>
+                        <th>DESCRIPTION</th>
+                        <th>SEVERITY</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for rule in rules %}
+
+                    <tr>
+
+                        <td class="mono">
+                            {{ rule.rule_id }}
+                        </td>
+
+
+                        <td>
+
+                            <div class="event-cell">
+
+                                <strong>
+                                    {{ rule.name }}
+                                </strong>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="rule-description">
+                                {{ rule.description }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                class="severity-badge {{ rule.severity|lower }}"
+                            >
+                                {{ rule.severity }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            {% if rule.enabled %}
+
+                            <span class="status-badge status-open">
+                                ENABLED
+                            </span>
+
+                            {% else %}
+
+                            <span class="status-badge status-closed">
+                                DISABLED
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'detector_rules.toggle_rule',
+                                    rule_id=rule.id
+                                ) }}"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="table-action"
+                                >
+
+                                    {% if rule.enabled %}
+                                        Disable
+                                    {% else %}
+                                        Enable
+                                    {% endif %}
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="empty-state"
+                        >
+                            No detector rules configured.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         ENGINE INFORMATION
+    ======================================================= -->
+
+    <section class="panel compact-panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-kicker">
+                    ENGINE INFORMATION
+                </span>
+
+                <h2>
+                    How Detection Works
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="detail-label">
+                    01
+                </span>
+
+                <strong>
+                    Event Ingestion
+                </strong>
+
+                <p>
+                    Security events are stored in the SQLite
+                    event database.
+                </p>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="detail-label">
+                    02
+                </span>
+
+                <strong>
+                    Rule Analysis
+                </strong>
+
+                <p>
+                    Enabled detector rules analyze each
+                    generated event.
+                </p>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="detail-label">
+                    03
+                </span>
+
+                <strong>
+                    Alert Generation
+                </strong>
+
+                <p>
+                    Matching rules create alerts linked to
+                    the original event.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

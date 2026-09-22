@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block title %}MiniSOC | Event Simulator{% endblock %}
+
+{% block content %}
+
+<div class="page-container simulator-page">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+
+        <div>
+            <div class="page-kicker">
+                SIMULATION CONTROL
+            </div>
+
+            <h1>Event Simulator</h1>
+            <div class="simulator-monitor">
+
+    <div class="monitor-radar">
+        <div class="radar-ring radar-ring-1"></div>
+        <div class="radar-ring radar-ring-2"></div>
+        <div class="radar-ring radar-ring-3"></div>
+
+        <div class="radar-sweep"></div>
+
+        <div class="radar-center">
+            <span></span>
+        </div>
+    </div>
+
+    <div class="monitor-status">
+        <strong>LIVE MONITORING</strong>
+
+        <span>
+            <i></i>
+            ACTIVE
+        </span>
+    </div>
+
+</div>
+
+            <p>
+                Generate controlled security telemetry and test
+                MiniSOC detection rules.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- LIVE TRAFFIC CARD -->
+    <section class="simulator-live-card">
+
+        <div class="simulator-live-info">
+
+            <div class="simulator-live-icon">
+                ◉
+            </div>
+
+            <div>
+                <span class="simulator-live-label">
+                    LIVE MONITORING SIMULATION
+                </span>
+
+                <h2>Indian Network Traffic</h2>
+
+                <p>
+                    Generate a batch of simulated security events
+                    from monitored Indian locations.
+                </p>
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('simulator.live_traffic') }}"
+        >
+
+            <button
+                type="submit"
+                class="simulator-live-button"
+            >
+                <span>▶</span>
+                Generate Live Traffic
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- MANUAL EVENT -->
+    <section class="simulator-card">
+
+        <div class="simulator-card-header">
+
+            <div>
+                <span class="simulator-section-label">
+                    MANUAL EVENT
+                </span>
+
+                <h2>Generate Security Event</h2>
+
+                <p>
+                    Create a controlled event and send it through
+                    the MiniSOC detection engine.
+                </p>
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="{{ url_for('simulator.simulator') }}"
+            class="simulator-form"
+            id="simulator-form"
+        >
+
+            <!-- SCENARIO -->
+            <div class="simulator-field simulator-full">
+
+                <label for="scenario">
+                    Scenario
+                </label>
+
+                <select
+                    id="scenario"
+                    name="scenario"
+                    class="simulator-input"
+                >
+
+                    <option value="">
+                        Custom Event
+                    </option>
+
+                    {% for key, scenario in scenarios.items() %}
+
+                    <option
+                        value="{{ key }}"
+                        data-source="{{ scenario.source_ip }}"
+                        data-destination="{{ scenario.destination_ip }}"
+                        data-type="{{ scenario.event_type }}"
+                        data-severity="{{ scenario.severity }}"
+                        data-message="{{ scenario.message }}"
+                    >
+                        {{ key|replace("_", " ")|title }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- SOURCE IP -->
+            <div class="simulator-field">
+
+                <label for="source_ip">
+                    Source IP
+                </label>
+
+                <input
+                    type="text"
+                    id="source_ip"
+                    name="source_ip"
+                    class="simulator-input"
+                    placeholder="203.0.113.44"
+                    required
+                >
+
+            </div>
+
+
+            <!-- DESTINATION IP -->
+            <div class="simulator-field">
+
+                <label for="destination_ip">
+                    Destination IP
+                </label>
+
+                <input
+                    type="text"
+                    id="destination_ip"
+                    name="destination_ip"
+                    class="simulator-input"
+                    placeholder="10.0.0.10"
+                    required
+                >
+
+            </div>
+
+
+            <!-- EVENT TYPE -->
+            <div class="simulator-field">
+
+                <label for="event_type">
+                    Event Type
+                </label>
+
+                <input
+                    type="text"
+                    id="event_type"
+                    name="event_type"
+                    class="simulator-input"
+                    placeholder="PORT_SCAN"
+                    required
+                >
+
+            </div>
+
+
+            <!-- SEVERITY -->
+            <div class="simulator-field">
+
+                <label for="severity">
+                    Severity
+                </label>
+
+                <select
+                    id="severity"
+                    name="severity"
+                    class="simulator-input"
+                    required
+                >
+
+                    <option value="">
+                        Select severity
+                    </option>
+
+                    <option value="LOW">
+                        LOW
+                    </option>
+
+                    <option value="MEDIUM">
+                        MEDIUM
+                    </option>
+
+                    <option value="HIGH">
+                        HIGH
+                    </option>
+
+                    <option value="CRITICAL">
+                        CRITICAL
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+            <div class="simulator-field simulator-full">
+
+                <label for="message">
+                    Event Message
+                </label>
+
+                <textarea
+                    id="message"
+                    name="message"
+                    class="simulator-input simulator-textarea"
+                    placeholder="Describe the simulated security activity..."
+                    rows="4"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+            <div class="simulator-actions simulator-full">
+
+                <button
+                    type="submit"
+                    class="simulator-primary-button"
+                    id="generate-event-button"
+                >
+                    Generate Event
+                </button>
+
+                <button
+                    type="reset"
+                    class="simulator-secondary-button"
+                    id="reset-event-button"
+                >
+                    Reset
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- INFORMATION -->
+    <section class="simulator-info-grid">
+
+        <div class="simulator-info-card">
+
+            <span class="simulator-info-number">
+                01
+            </span>
+
+            <h3>Generate</h3>
+
+            <p>
+                Create synthetic security telemetry using the
+                simulator.
+            </p>
+
+        </div>
+
+
+        <div class="simulator-info-card">
+
+            <span class="simulator-info-number">
+                02
+            </span>
+
+            <h3>Analyze</h3>
+
+            <p>
+                The detection engine evaluates the event against
+                enabled detector rules.
+            </p>
+
+        </div>
+
+
+        <div class="simulator-info-card">
+
+            <span class="simulator-info-number">
+                03
+            </span>
+
+            <h3>Visualize</h3>
+
+            <p>
+                Events and alerts become available across the
+                MiniSOC dashboard and monitoring pages.
+            </p>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script
+    src="{{ url_for('static', filename='js/simulator.js') }}"
+></script>
+
+{% endblock %}

@@ -1,0 +1,439 @@
+{% extends "base.html" %}
+
+{% block title %}
+MiniSOC | Reports
+{% endblock %}
+
+
+{% block content %}
+
+<div class="content-page">
+
+    <!-- ======================================================
+         PAGE HEADER
+    ======================================================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                SECURITY REPORTING
+            </span>
+
+            <h1>
+                Reports
+            </h1>
+
+            <p>
+                Review security activity, severity distribution,
+                detection rules and source activity.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         OVERVIEW
+    ======================================================= -->
+
+    <div class="metrics-grid metrics-grid-small">
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                TOTAL EVENTS
+            </div>
+
+            <div class="metric-value">
+                {{ total_events }}
+            </div>
+
+            <div class="metric-meta">
+                Recorded telemetry
+            </div>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                TOTAL ALERTS
+            </div>
+
+            <div class="metric-value alert-value">
+                {{ total_alerts }}
+            </div>
+
+            <div class="metric-meta">
+                Detection results
+            </div>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                OPEN ALERTS
+            </div>
+
+            <div class="metric-value critical-value">
+                {{ open_alerts }}
+            </div>
+
+            <div class="metric-meta">
+                Active alerts
+            </div>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <div class="metric-label">
+                SOURCE IPS
+            </div>
+
+            <div class="metric-value">
+                {{ source_ips }}
+            </div>
+
+            <div class="metric-meta">
+                Unique sources
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         SEVERITY + ALERT SEVERITY
+    ======================================================= -->
+
+    <div class="dashboard-main-grid">
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <span class="panel-kicker">
+                        EVENT ANALYSIS
+                    </span>
+
+                    <h2>
+                        Event Severity
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="report-list">
+
+                {% for item in severity_stats %}
+
+                <div class="report-row">
+
+                    <div class="report-row-title">
+
+                        <span>
+                            {{ item.severity }}
+                        </span>
+
+                        <strong>
+                            {{ item.count }}
+                        </strong>
+
+                    </div>
+
+                    <div class="severity-track">
+
+                        <div
+                            class="severity-fill {{ item.severity|lower }}"
+                            style="width: {{ item.percentage }}%"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state">
+                    No event severity data available.
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <span class="panel-kicker">
+                        ALERT ANALYSIS
+                    </span>
+
+                    <h2>
+                        Alert Severity
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="report-list">
+
+                {% for item in alert_severity_stats %}
+
+                <div class="report-row">
+
+                    <div class="report-row-title">
+
+                        <span>
+                            {{ item.severity }}
+                        </span>
+
+                        <strong>
+                            {{ item.count }}
+                        </strong>
+
+                    </div>
+
+                    <div class="severity-track">
+
+                        <div
+                            class="severity-fill {{ item.severity|lower }}"
+                            style="width: {{ item.percentage }}%"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state">
+                    No alert severity data available.
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- ======================================================
+         EVENT TYPES
+    ======================================================= -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-kicker">
+                    EVENT CLASSIFICATION
+                </span>
+
+                <h2>
+                    Event Types
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="report-grid">
+
+            {% for item in event_type_stats %}
+
+            <div class="report-card">
+
+                <span class="report-card-label">
+                    EVENT TYPE
+                </span>
+
+                <strong>
+                    {{ item.event_type }}
+                </strong>
+
+                <span class="report-card-value">
+                    {{ item.count }} events
+                </span>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-state">
+                No event type data available.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         TOP SOURCE IPS
+    ======================================================= -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-kicker">
+                    SOURCE ANALYSIS
+                </span>
+
+                <h2>
+                    Top Source IPs
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table class="soc-table">
+
+                <thead>
+
+                    <tr>
+                        <th>RANK</th>
+                        <th>SOURCE IP</th>
+                        <th>EVENT COUNT</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in top_sources %}
+
+                    <tr>
+
+                        <td>
+                            {{ loop.index }}
+                        </td>
+
+                        <td class="mono">
+                            {{ item.source_ip }}
+                        </td>
+
+                        <td>
+                            {{ item.count }}
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="3"
+                            class="empty-state"
+                        >
+                            No source IP activity available.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         DETECTOR RULE ACTIVITY
+    ======================================================= -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-kicker">
+                    DETECTION ENGINE
+                </span>
+
+                <h2>
+                    Rule Activity
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="report-grid">
+
+            {% for item in rule_stats %}
+
+            <div class="report-card">
+
+                <span class="report-card-label">
+                    RULE
+                </span>
+
+                <strong>
+                    {{ item.rule_id }}
+                </strong>
+
+                <span class="report-card-value">
+                    {{ item.count }} alerts
+                </span>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-state">
+                No detector rule activity available.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
