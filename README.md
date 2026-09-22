@@ -36,26 +36,31 @@ Detector Rules
       ↓
 Alerts
       ↓
-Dashboard / Reports```
-
-
+Dashboard / Reports
+```
 
 ## Run Locally
 
+```powershell
 python -m venv --without-pip venv
 .\venv\Scripts\Activate.ps1
 python -m ensurepip --upgrade
 python -m pip install -r requirements.txt
 python app.py
+```
 
 Open:
 
+```text
 http://127.0.0.1:5000
+```
 
-# Default Login
+## Default Login
 
+```text
 Username: admin
 Password: Admin@12345
+```
 
 ## Disclaimer
 
@@ -63,5 +68,6 @@ MiniSOC is an educational cybersecurity project intended for authorized local te
 
 ## Author
 
-M Archana
+**M Archana**
+
 Cybersecurity Student
